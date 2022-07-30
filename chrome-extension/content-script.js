@@ -41,26 +41,32 @@ function dangerouslyMutateState(nState) {
 /**
  * Request
  */
-const API_END_POINT = "https://localhost:8000/";
+const API_END_POINT = "http://localhost:8000/";
 
 //mocking
-async function fetch(resource, option) {
-  const colored = option.body.map((innerText) => innerText.toUpperCase());
-  const response = {
-    ok: true,
-    json: (async () => colored),
-  };
-  return response
+// async function fetch(resource, option) {
+//   const colored = option.body.map((innerText) => innerText.toUpperCase());
+//   const response = {
+//     ok: true,
+//     json: (async () => colored),
+//   };
+//   return response
 
-}
+// }
 
 async function requestColor(sentences){
     try{
-        const response = await fetch(API_END_POINT+"test", {method: "POST", body: sentences});
+        const response = await fetch(API_END_POINT+"test", {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({sentences}),
+        });
         
         if (response.ok) {
             const json = await response.json();
-            return json;
+            return json.sentences;
         }
         throw new Error("request Failed. Are you trying to convert non-english sentence?");
     }catch (e) {

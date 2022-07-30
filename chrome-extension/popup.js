@@ -44,11 +44,11 @@ $btnChangeColor.addEventListener("click", async () => {
  */
 function renderButton(isColorOn = false) {
   if (isColorOn) {
-    $btnChangeColor.innerText = "Reset";
-    $btnChangeColor.dataset.on = true;
+    $btnChangeColor.innerText = "Revert";
+    $btnChangeColor.dataset.revert = true;
   } else {
     $btnChangeColor.innerText = "Colorize";
-    delete $btnChangeColor.dataset.on;
+    delete $btnChangeColor.dataset.revert;
   }
 }
 

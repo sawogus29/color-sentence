@@ -17,6 +17,6 @@ body {
   margin-bottom: 1em;
 }
 
-#changeColor[data-on="true"] {
+#changeColor[data-revert="true"] {
   background: lightgray;
 }

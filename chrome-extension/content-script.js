@@ -1,7 +1,6 @@
 /**
  * Initialization
  */
-const API_ENDPOINT = "https://123.456.789:5000/";
 const INITIAL_STATE = {
   isColorOn: false,
   url: "",
@@ -40,6 +39,36 @@ function dangerouslyMutateState(nState) {
 }
 
 /**
+ * Request
+ */
+const API_END_POINT = "https://localhost:8000/";
+
+//mocking
+async function fetch(resource, option) {
+  const colored = option.body.map((innerText) => innerText.toUpperCase());
+  const response = {
+    ok: true,
+    json: (async () => colored),
+  };
+  return response
+
+}
+
+async function requestColor(sentences){
+    try{
+        const response = await fetch(API_END_POINT+"test", {method: "POST", body: sentences});
+        
+        if (response.ok) {
+            const json = await response.json();
+            return json;
+        }
+        throw new Error("request Failed. Are you trying to convert non-english sentence?");
+    }catch (e) {
+        console.error(e.message);
+    }
+}
+
+/**
  * Message Handler
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -62,12 +91,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-/**
- * Mocking
- */
-async function fetch(resource, option) {
-  return option.body.map((innerText) => innerText.toUpperCase());
-}
 
 /**
  * Features (change State)
@@ -79,9 +102,8 @@ async function toggleColor() {
   if (!$ps) {
     $ps = Array.from(document.querySelectorAll("p"));
     origInnerHTMLs = $ps.map(($p) => $p.innerHTML);
-    colorInnerHTMLs = await fetch(API_ENDPOINT, {
-      body: $ps.map(($p) => $p.innerText),
-    });
+    // TODO: Error Handling
+    colorInnerHTMLs = await requestColor($ps.map($p=>$p.innerText));
   }
 
   setState({

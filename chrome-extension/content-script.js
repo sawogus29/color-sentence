@@ -40,6 +40,7 @@ function dangerouslyMutateState(nState) {
 
 /**
  * Request
+ * - Errors are handled by Message Handler
  */
 const API_END_POINT = "http://localhost:8000/";
 
@@ -54,24 +55,20 @@ const API_END_POINT = "http://localhost:8000/";
 
 // }
 
-async function requestColor(sentences){
-    try{
-        const response = await fetch(API_END_POINT+"test", {
-          method: "POST", 
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({sentences}),
-        });
-        
-        if (response.ok) {
-            const json = await response.json();
-            return json.sentences;
-        }
-        throw new Error("request Failed. Are you trying to convert non-english sentence?");
-    }catch (e) {
-        console.error(e.message);
-    }
+async function requestColor(paragraphs){
+  const response = await fetch(API_END_POINT+"color", {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({paragraphs}),
+  });
+  
+  if (response.ok) {
+      const json = await response.json();
+      return json.paragraphs;
+  }
+  throw new Error("request Failed. Are you trying to convert non-english sentence?");
 }
 
 /**
@@ -90,7 +87,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       notifyState(state);
       break;
     case "event-click":
-      toggleColor();
+        toggleColor()
+          .catch((err)=>{
+            notifyError("An error occured during Colorization. Try again later.")
+          })
       break;
     default:
       break;
@@ -108,8 +108,7 @@ async function toggleColor() {
   if (!$ps) {
     $ps = Array.from(document.querySelectorAll("p"));
     origInnerHTMLs = $ps.map(($p) => $p.innerHTML);
-    // TODO: Error Handling
-    colorInnerHTMLs = await requestColor($ps.map($p=>$p.innerText));
+    colorInnerHTMLs = await requestColor($ps.map($p=>$p.textContent));
   }
 
   setState({
@@ -132,6 +131,14 @@ function changeDOM({ isColorOn, $ps, origInnerHTMLs, colorInnerHTMLs }) {
   $ps.forEach(($p, i) => ($p.innerHTML = innerHTMLs[i]));
 }
 
+/**
+ * Notify
+ */
+
 function notifyState(state) {
   chrome.runtime.sendMessage({ type: "color", payload: state.isColorOn });
+}
+
+function notifyError(errorMessage="Error Occured") {
+  chrome.runtime.sendMessage({ type: "error", payload: errorMessage})
 }

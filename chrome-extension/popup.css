@@ -20,3 +20,8 @@ body {
 #changeColor[data-revert="true"] {
   background: lightgray;
 }
+
+#error {
+  text-align: center;
+  color: red;
+}

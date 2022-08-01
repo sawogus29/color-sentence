@@ -1,8 +1,9 @@
 from typing import Union, List
-
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+
+from pipelines import get_nlp
 
 app = FastAPI()
 
@@ -18,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Sentences(BaseModel):
-    sentences: List[str]
+class Paragraphs(BaseModel):
+    paragraphs: List[str]
         
 
 @app.get("/")
@@ -32,7 +33,14 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.post("/test")
-async def test(sents: Sentences):
-    print(sents.sentences)
-    return {"sentences": [sent.upper() for sent in sents.sentences]}
+@app.post("/color")
+async def color(ps: Paragraphs):
+    nlp = get_nlp()
+    docs = [nlp(p) for p in ps.paragraphs]
+    colored_ps = [doc._.generate_html() for doc in docs]
+    return {"paragraphs": colored_ps}
+
+@app.post("/test2")
+async def test2(ps: Paragraphs):
+    print(ps.paragraphs)
+    return {"paragraphs": [p.upper() for p in ps.paragraphs]}

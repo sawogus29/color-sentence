@@ -7,4 +7,5 @@ lib64
 pyvenv.cfg
 
 # python
-/__pycache__
+**/__pycache__/
+**/__init__.py

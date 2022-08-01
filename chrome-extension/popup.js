@@ -24,6 +24,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const isColorOn = message.payload;
       renderButton(isColorOn);
       break;
+    case "error":
+      console.log('error message recieved');
+      const errorMessage = message.payload;
+      renderError(errorMessage);
     default:
       break;
   }
@@ -63,4 +67,12 @@ function renderRefresh() {
     window.close();
   });
   document.body.appendChild($btnRefresh);
+}
+
+function renderError(errorMessage){
+  document.body.innerHTML = ""
+  const $error = document.createElement("p")
+  $error.id = "error";
+  $error.innerText = errorMessage;
+  document.body.appendChild($error);
 }

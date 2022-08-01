@@ -1,3 +1,45 @@
-p {
+/* p {
   background-color: rgba(0, 0, 255, 0.1);
+} */
+
+
+.sent > .subj {
+    background-color: pink;
+}
+
+.sent > .verb {
+    background-color: yellow;
+}
+
+.sent > .obj {
+    background-color: lightgreen;
+}
+
+.sent > .comp {
+    background-color: lightblue;
+}
+
+.sent > .aux {
+    color: #555555;
+    border-radius:1em;
+    padding-left:1px;
+    padding-right:1px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.aux > .subj {
+    text-shadow: 0 0 3px pink;
+}
+
+.aux > .verb {
+    text-shadow: 0 0 3px yellow;
+}
+
+.aux > .obj {
+    text-shadow: 0 0 3px lightgreen;
+}
+
+.aux > .comp {
+    text-shadow: 0 0 3px lightblue;
 }

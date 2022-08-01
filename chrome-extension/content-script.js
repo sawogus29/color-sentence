@@ -42,18 +42,28 @@ function dangerouslyMutateState(nState) {
  * Request
  * - Errors are handled by Message Handler
  */
-const API_END_POINT = "http://localhost:8000/";
+// const API_END_POINT = "http://34.136.209.246:8000/";
+const API_END_POINT = "http://34.136.209.246:8000/";
 
 //mocking
-// async function fetch(resource, option) {
-//   const colored = option.body.map((innerText) => innerText.toUpperCase());
-//   const response = {
-//     ok: true,
-//     json: (async () => colored),
-//   };
-//   return response
-
-// }
+// TODO: Add HTTPS to backend
+// Since content-script can't make "mixed-content" request,
+// content-script delegate request to background.js.
+// * mixed-content: HTTPS page make HTTP request (not allowed)
+async function fetch(resource, option) {
+  const message = await chrome.runtime.sendMessage({type: "fetch", payload: [resource, option]})
+  switch(message.type){
+    case "fetch-response":
+      const json = message.payload;
+      const response = {ok: true, json: ()=>Promise.resolve(json) };
+      return response;
+    case "fetch-error":
+      const errorMessage = message.payload;
+      throw new Error(errorMessage);
+    default:
+      break;
+  }
+}
 
 async function requestColor(paragraphs){
   const response = await fetch(API_END_POINT+"color", {

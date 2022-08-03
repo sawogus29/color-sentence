@@ -42,8 +42,8 @@ function dangerouslyMutateState(nState) {
  * Request
  * - Errors are handled by Message Handler
  */
-// const API_END_POINT = "http://34.136.209.246:8000/";
-const API_END_POINT = "http://34.136.209.246:8000/";
+const API_END_POINT = "http://35.185.212.220:8000/";
+// const API_END_POINT = "http://localhost:8000/";
 
 //mocking
 // TODO: Add HTTPS to backend

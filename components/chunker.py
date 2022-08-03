@@ -5,7 +5,7 @@ from spacy.language import Language
 def chunk_component(doc):
     def _chunk(sent):
         root = find_root(sent)
-        if root.pos_ in verb_like:
+        if root and root.pos_ in verb_like:
             verb_handler(root)
 
     for sent in doc.sents:

@@ -21,8 +21,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log(message);
   switch (message.type) {
     case "color":
-      const isColorOn = message.payload;
-      renderButton(isColorOn);
+      const {isColorOn, isLoading} = message.payload;
+      renderButton(isColorOn, isLoading);
       break;
     case "error":
       console.log('error message recieved');
@@ -37,16 +37,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * Event Handler
  */
 $btnChangeColor.addEventListener("click", async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if($btnChangeColor.dataset.loading){
+    return;
+  }
 
-  $btnChangeColor.innerText += "1";
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.sendMessage(tab.id, { type: "event-click" });
 });
 
 /**
  * Rendering
  */
-function renderButton(isColorOn = false) {
+function renderButton(isColorOn = false, isLoading = false) {
+  if (isLoading){
+    $btnChangeColor.innerHTML = "Loading";
+    $btnChangeColor.dataset.loading = true;
+    return;
+  }
+  delete $btnChangeColor.dataset.loading;
+
   if (isColorOn) {
     $btnChangeColor.innerText = "Revert";
     $btnChangeColor.dataset.revert = true;

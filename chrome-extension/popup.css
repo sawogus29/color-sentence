@@ -5,23 +5,103 @@ body {
 #changeColor {
   width: 100%;
   padding-block: 0.5em;
-  background: linear-gradient(
+  margin-bottom: 0.2em;
+  border: 1px solid lightgray;
+  border-radius: 0.2em;
+  background-image: linear-gradient(
     90deg,
-    #ee0000,
-    #ffff00,
-    #00ee00,
-    #00eeff,
-    #7e7e7e
+    hsl(0, 100%, 47%),
+    hsl(60, 100%, 50%),
+    hsl(120, 100%, 47%),
+    hsl(184, 100%, 50%),
+    hsl(0, 0%, 60%)
   );
-
-  margin-bottom: 1em;
 }
 
-#changeColor[data-revert="true"] {
-  background: lightgray;
+/**
+ * State
+ */
+#changeColor[data-revert] {
+  background-image: initial;
+  background-color: hsl(0, 0%, 85%);
+}
+
+#changeColor[data-loading] {
+  background-image: initial;
+  animation: 2s infinite normal loading;
+}
+
+@keyframes loading {
+  0% {
+    background-color: hsl(0, 100%, 80%);
+  }
+  20% {
+    background-color: hsl(60, 100%, 80%);
+  }
+  40% {
+    background-color: hsl(120, 100%, 80%);
+  }
+  60% {
+    background-color: hsl(184, 100%, 80%);
+  }
+  80% {
+    background-color: hsl(240, 100%, 80%);
+
+  }
+  100% {
+    background-color: hsl(0, 100%, 80%);
+  }
+}
+
+/**
+ * Interaction
+ */
+/* #changeColor:focus */
+#changeColor:hover{
+  background-image: linear-gradient(
+    90deg,
+    hsl(0, 100%, 80%),
+    hsl(60, 100%, 80%),
+    hsl(120, 100%, 80%),
+    hsl(184, 100%, 80%),
+    hsl(0, 0%, 80%)
+  );
+}
+
+#changeColor[data-revert]:hover{
+  background-image: initial;
+  background-color: hsl(0, 0%, 95%);
 }
 
 #error {
   text-align: center;
   color: red;
+}
+
+/**
+ * Sentence Parts
+ */
+.subj {
+    background-color: pink;
+}
+
+.verb {
+    background-color: yellow;
+}
+
+.obj {
+    background-color: lightgreen;
+}
+
+.comp {
+    background-color: lightblue;
+}
+
+.aux {
+    color: #555555;
+    border-radius:1em;
+    padding-left:1px;
+    padding-right:1px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
 }

@@ -3,6 +3,7 @@
  */
 const INITIAL_STATE = {
   isColorOn: false,
+  isLoading: false,
   url: "",
   $ps: null,
   origInnerHTMLs: null,
@@ -116,6 +117,7 @@ async function toggleColor() {
   let { isColorOn, $ps, origInnerHTMLs, colorInnerHTMLs } = state;
 
   if (!$ps) {
+    setState({isLoading: true});
     $ps = Array.from(document.querySelectorAll("p"));
     origInnerHTMLs = $ps.map(($p) => $p.innerHTML);
     colorInnerHTMLs = await requestColor($ps.map($p=>$p.textContent));
@@ -123,6 +125,7 @@ async function toggleColor() {
 
   setState({
     isColorOn: !state.isColorOn,
+    isLoading: false,
     $ps,
     origInnerHTMLs,
     colorInnerHTMLs,
@@ -146,7 +149,8 @@ function changeDOM({ isColorOn, $ps, origInnerHTMLs, colorInnerHTMLs }) {
  */
 
 function notifyState(state) {
-  chrome.runtime.sendMessage({ type: "color", payload: state.isColorOn });
+  const {isColorOn, isLoading} = state;
+  chrome.runtime.sendMessage({ type: "color", payload: {isColorOn, isLoading} });
 }
 
 function notifyError(errorMessage="Error Occured") {

@@ -27,20 +27,9 @@ class Paragraphs(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
 @app.post("/color")
 async def color(ps: Paragraphs):
     nlp = get_nlp()
     docs = [nlp(p) for p in ps.paragraphs]
     colored_ps = [doc._.generate_html() for doc in docs]
     return {"paragraphs": colored_ps}
-
-@app.post("/test2")
-async def test2(ps: Paragraphs):
-    print(ps.paragraphs)
-    return {"paragraphs": [p.upper() for p in ps.paragraphs]}
